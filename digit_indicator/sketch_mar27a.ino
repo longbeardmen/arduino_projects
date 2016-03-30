@@ -19,7 +19,19 @@
 #define G   8
 #define DP  9
 
-int i, n = 6, ledDelay = 100, highPins[] = {A, B, C, D, E, F, G, DP}, lowPins[]= {43, 41, 39, 37, 35, 33};
+int i, j,
+    lowPins[]= {43, 41, 39, 37, 35, 33},
+    highPins[] = {A, B, C, D, E, F, G, DP},
+    zero[] = {A, B, C, D, E, F, DP},
+    one[] = {B, C},
+    two[] = {A, B, D, E, G},
+    three[] = {A, B, C, D, G},
+    four[] = {B, C, F, G},
+    five[] = {A, C, D, F, G},
+    six[] = {A, C, D, E, F, G, DP},
+    seven[] = {A, B, C},
+    eight[] = {A, B, C, D, E, F, G},
+    nine[] {A, B, C, D,F, G, DP};
 
 void setup ()
 {
@@ -35,19 +47,85 @@ void setup ()
   }
 }
 
+void power(int digit, const char constant)
+{
+  switch(digit)
+      {
+        case 0:
+          for(int segment : zero)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 1:
+          for(int segment : one)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 2:
+          for(int segment : two)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 3:
+          for(int segment : three)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 4:
+          for(int segment : four)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 5:
+          for(int segment : five)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 6:
+          for(int segment : six)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 7:
+          for(int segment : seven)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 8:
+          for(int segment : eight)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;
+        case 9:
+          for(int segment : nine)
+          {
+            digitalWrite(segment, constant);
+          }
+          break;        
+      }
+}
+
 void loop ()
 {
-  for(int i = 0; i < 6; i++)
+  for(i = 0; i < 6; i++)
   {
     digitalWrite(lowPins[i], LOW);
-    for(int j = 0; j < 8; j++)
+    for(j = 0; j < 10; j++)
     {
-      digitalWrite(highPins[j], HIGH);
-      delay(200);
-      digitalWrite(highPins[j], LOW);
-      delay(200);
+      power(j, HIGH);    
+      delay(100);
+      power(j, LOW);
+      delay(100);
     }
     digitalWrite(lowPins[i], HIGH);
   }
 }
-
