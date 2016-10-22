@@ -30,10 +30,10 @@ int i, j,
       a|b|c|d|g,
       b|c|f|g,
       a|c|d|f|g,
-      a|c|d|e|f|g|dp,
+      a|c|d|e|f|g,
       a|b|c,
       a|b|c|d|e|f|g,
-      a|b|c|d|f|g|dp
+      a|b|c|d|f|g
     };
 
 void getDigit(int x, const char c) {
@@ -43,6 +43,8 @@ void getDigit(int x, const char c) {
     }
   }
 }
+
+int day[] = {0,0,0,0,0,0};
 
 void setup (){
   for(int high : highPins){
@@ -55,16 +57,40 @@ void setup (){
   }
 }
 
+void incDigit() {
+
+  day[5]++;
+  bool dop = false;
+
+  for (int i = 5; i >= 0; i--) {
+    if (dop) {
+      day[i]++;
+    }
+    dop = false;
+    
+    if (day[i] == 10) {
+      day[i] = 0;
+      dop = true;
+    }
+  }
+}
+
 void loop (){
+  static int time = 0;
   for(i = 0; i < 6; i++)
   {
     digitalWrite(lowPins[i], LOW);
-    for(j = 0; j < 10; j++)
-    {
-      getDigit(j, HIGH);    
-      delay(300);
-      getDigit(j, LOW);
-    }
+      
+      getDigit(day[i], HIGH); 
+      delay(4);//kastyl'
+      getDigit(day[i], LOW);
+
+      time++;
+      if (time >= 15) {
+        incDigit();
+        time = 0;
+      }
+    
     digitalWrite(lowPins[i], HIGH);
   }
 }
