@@ -1,10 +1,10 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h> // https://github.com/maniacbug/RF24
- 
-  
+
+
 const uint64_t pipe = 0xF0F1F2F3F4LL; // индитификатор передачи, "труба"
- 
+
 RF24 radio(9, 53); // CE, CSN
 
 int encoderPin1 = 2;
@@ -21,43 +21,43 @@ int lastLSB = 0;
 void setup(){
   Serial.begin(9600);
 
-  pinMode(encoderPin1, INPUT); 
+  pinMode(encoderPin1, INPUT);
   pinMode(encoderPin2, INPUT);
 
   digitalWrite(encoderPin1, HIGH); //turn pullup resistor on
   digitalWrite(encoderPin2, HIGH); //turn pullup resistor on
 
   //call updateEncoder() when any high/low changed seen
-  //on interrupt 0 (pin 2), or interrupt 1 (pin 3) 
-  attachInterrupt(0, updateEncoder, CHANGE); 
+  //on interrupt 0 (pin 2), or interrupt 1 (pin 3)
+  attachInterrupt(0, updateEncoder, CHANGE);
   attachInterrupt(1, updateEncoder, CHANGE);
 
   radio.begin();
   delay(2);
   radio.setChannel(9); // канал (0-127)
-    
+
       // скорость, RF24_250KBPS, RF24_1MBPS или RF24_2MBPS
       // RF24_250KBPS на nRF24L01 (без +) неработает.
       // меньше скорость, выше чувствительность приемника.
-  radio.setDataRate(RF24_1MBPS); 
-   
+  radio.setDataRate(RF24_1MBPS);
+
       // мощьность передатчика, RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_MED=-6dBM,
-  radio.setPALevel(RF24_PA_HIGH);   
+  radio.setPALevel(RF24_PA_HIGH);
 
   radio.openWritingPipe(pipe); // открываем трубу на передачу.
-} 
+}
 
 
-void loop()   
+void loop()
 {
-  
+
   int data = encoderValue; // читаем значение
-  
+
   radio.write(&data, sizeof(data)); // отправляем данные и указываем сколько байт пакет
-  
+
   Serial.print("data: ");
   Serial.println(data);
- 
+
 }
 //From bildr article: http://bildr.org/2012/08/rotary-encoder-arduino/
 

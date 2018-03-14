@@ -1,35 +1,67 @@
-// MPU-6050 Short Example Sketch
-// By Arduino User JohnChi
-// August 17, 2014
-// Public Domain
+#include <PID_v1.h>
 #include<Wire.h>
-const int MPU_addr=0x68;  // I2C address of the MPU-6050
-int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
+#include <Servo.h>
+
+#define MPU_addr 0x68
+#define servoMinImp 544
+#define servoMaxImp 2400
+#define signalPin 9
+
+int16_t error, tempServoImp;
+
+Servo myservo;
+
 void setup(){
+  Serial.begin(9600);
+  tempServoImp = servoMinImp;
+  myservo.attach(signalPin, servoMinImp, servoMaxImp);
+  myservo.writeMicroseconds(tempServoImp += 1);
+  
   Wire.begin();
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x6B);  // PWR_MGMT_1 register
   Wire.write(0);     // set to zero (wakes up the MPU-6050)
   Wire.endTransmission(true);
-  Serial.begin(9600);
 }
+
 void loop(){
   Wire.beginTransmission(MPU_addr);
-  Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU_addr,14,true);  // request a total of 14 registers
-//  AcX=Wire.read()<<8|Wire.read();  // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)    
-//  AcY=Wire.read()<<8|Wire.read();  // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
-//  AcZ=Wire.read()<<8|Wire.read();  // 0x3F (ACCEL_ZOUT_H) & 0x40 (ACCEL_ZOUT_L)
-  Tmp=Wire.read()<<8|Wire.read();  // 0x41 (TEMP_OUT_H) & 0x42 (TEMP_OUT_L)
-  GyX=Wire.read()<<8|Wire.read();  // 0x43 (GYRO_XOUT_H) & 0x44 (GYRO_XOUT_L)
-  GyY=Wire.read()<<8|Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
-  GyZ=Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
-//  Serial.print("AcX = "); Serial.print(AcX);
-//  Serial.print(" | AcY = "); Serial.print(AcY);
-//  Serial.print(" | AcZ = "); Serial.print(AcZ);
-  Serial.print(" | Tmp = "); Serial.print(Tmp/340.00+36.53);  //equation for temperature in degrees C from datasheet
-  Serial.print(" | GyX = "); Serial.print(GyX);
-  Serial.print(" | GyY = "); Serial.print(GyY);
-  Serial.print(" | GyZ = "); Serial.println(GyZ);
+  Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)  
+  Wire.requestFrom(MPU_addr,2,true);  // request just 2 registers (14 - full)
+  error = Wire.read()<<8|Wire.read();  // 0x43 (GYRO_XOUT_H) & 0x44 (GYRO_XOUT_L)
+  Wire.endTransmission(true);
+  Serial.println(error);
+  if(error > 0){
+    myservo.writeMicroseconds(tempServoImp += 1);
+  }else{
+    myservo.writeMicroseconds(tempServoImp -= 1);
+  }
 }
+
+int scale_1(int error) {
+  int delta = abs(error)/100;
+//  Serial.print("delta: ");Serial.println(delta);
+  
+  if(delta == 0) {
+    return 1;
+  } else {
+    return delta/2;
+  }
+}
+
+int scale_2(int error) {
+  int abs_error = abs(error);
+  
+  if(abs_error <= 800) {
+    return 1;
+  } else if(abs_error > 800 && abs_error <= 3200) {
+    return 4;
+  } else if(abs_error > 3200 && abs_error <= 6400) {
+    return 8;
+  } else if(abs_error > 6400 && abs_error <= 12800) {
+    return 16;
+  } else if(abs_error > 12800) {
+    return 32;
+  }
+}
+

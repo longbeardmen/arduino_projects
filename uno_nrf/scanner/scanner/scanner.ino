@@ -2,8 +2,8 @@
 #include "nRF24L01.h"
 #include "RF24.h"
 
-RF24 radio(9,10); // Для Уно
-//RF24 radio(9,53);// Для Меги
+//RF24 radio(9,10); // mini
+RF24 radio(7,8);// uno chip dip
 const uint8_t num_channels = 128;
 uint8_t values[num_channels];
 void setup(void)

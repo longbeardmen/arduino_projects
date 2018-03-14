@@ -1,65 +1,39 @@
-//#define A 6
-//#define B 7
-//#define C 8
+#define A 9
+#define B 10
+#define C 11
 
-unsigned int ms = 1000;
+unsigned int ms = 100;
 
-void setup() { 
-  for (size_t i = 2; i < 8; i++)
-    pinMode(i, OUTPUT);
-//  pinMode(A, OUTPUT);
-//  pinMode(B, OUTPUT);
-//  pinMode(C, OUTPUT);
+void setup() {
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(C, OUTPUT);
 }
 
 void loop(){
-  digitalWrite(2, HIGH);
-  digitalWrite(5, LOW);
-  digitalWrite(6, HIGH);
+  analogWrite(A, 1);
+  analogWrite(B, 0);
+  analogWrite(C, 0);
   delay(ms);
-  digitalWrite(3, LOW);
-  digitalWrite(5, LOW);
-  digitalWrite(6, HIGH);
+  analogWrite(A, 1);
+  analogWrite(B, 0);
+  analogWrite(C, 1);
   delay(ms);
-  digitalWrite(3, LOW);
-  digitalWrite(4, HIGH);
-  digitalWrite(6, HIGH);
+  analogWrite(A, 0);
+  analogWrite(B, 1);
+  analogWrite(C, 0);
   delay(ms);
-  digitalWrite(3, LOW);
-  digitalWrite(4, HIGH);
-  digitalWrite(7, LOW);
+  analogWrite(A, 0);
+  analogWrite(B, 1);
+  analogWrite(C, 1);
   delay(ms);
-  digitalWrite(2, HIGH);
-  digitalWrite(4, HIGH);
-  digitalWrite(7, LOW);
+  analogWrite(A, 0);
+  analogWrite(B, 0);
+  analogWrite(C, 1);
   delay(ms);
-  digitalWrite(2, HIGH);
-  digitalWrite(5, LOW);
-  digitalWrite(7, LOW);
+  analogWrite(A, 1);
+  analogWrite(B, 1);
+  analogWrite(C, 0);
   delay(ms);
-//    digitalWrite(A, 1); 
-//    digitalWrite(B, 0);
-//    digitalWrite(C, 1);
-//      delay(ms); 
-//    digitalWrite(A, 0); 
-//    digitalWrite(B, 0);
-//    digitalWrite(C, 1);
-//      delay(ms);
-//    digitalWrite(A, 0);
-//    digitalWrite(B, 1);
-//    digitalWrite(C, 1);
-//      delay(ms);
-//    digitalWrite(A, 0); 
-//    digitalWrite(B, 1);
-//    digitalWrite(C, 0);
-//      delay(ms); 
-//    digitalWrite(A, 1); 
-//    digitalWrite(B, 1);
-//    digitalWrite(C, 0);
-//      delay(ms);
-//    digitalWrite(A, 1);
-//    digitalWrite(B, 0);
-//    digitalWrite(C, 0);
-//      delay(ms); 
 }
 
